@@ -1,0 +1,10 @@
+Déposez ici vos photos (format JPG), avec exactement ces noms :
+
+  histoire-1.jpg   polaroïd du haut, format paysage (idéalement 1500 x 1200 px)
+  histoire-2.jpg   polaroïd en bas à gauche, format portrait (1200 x 1500 px)
+  histoire-3.jpg   polaroïd en bas à droite, format portrait (1200 x 1500 px)
+
+Conseil : compressez-les (moins de 400 Ko chacune) avec https://squoosh.app pour un chargement rapide.
+Tant qu'une photo manque, un cadre ivoire avec le monogramme I&A s'affiche à sa place.
+
+Musique (facultatif) : déposez « musique.mp3 » à côté de index.html (pas dans ce dossier).
