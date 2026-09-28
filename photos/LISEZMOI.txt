@@ -1,10 +1,13 @@
 Déposez ici vos photos (format JPG), avec exactement ces noms :
 
-  histoire-1.jpg   polaroïd du haut, format paysage (idéalement 1500 x 1200 px)
-  histoire-2.jpg   polaroïd en bas à gauche, format portrait (1200 x 1500 px)
-  histoire-3.jpg   polaroïd en bas à droite, format portrait (1200 x 1500 px)
+  couple-1.jpg     accueil, polaroïd du fond + médaillon doré (format carré ou portrait)
+  couple-2.jpg     accueil, polaroïd de devant + médaillon doré (format carré ou portrait)
+  histoire-1.jpg   « Nos débuts » et polaroïd « Notre histoire » du sommaire (portrait 4:5)
+  histoire-2.jpg   « Nous deux » (portrait 4:5)
+  histoire-3.jpg   « Le oui » (portrait 4:5)
+  domaine.jpg      polaroïd « Les lieux » du sommaire, une photo du château (portrait 4:5)
 
-Conseil : compressez-les (moins de 400 Ko chacune) avec https://squoosh.app pour un chargement rapide.
+Taille conseillée : 1200 x 1500 px. Compressez-les (moins de 400 Ko chacune) avec https://squoosh.app.
 Tant qu'une photo manque, un cadre ivoire avec le monogramme I&A s'affiche à sa place.
 
 Musique (facultatif) : déposez « musique.mp3 » à côté de index.html (pas dans ce dossier).
