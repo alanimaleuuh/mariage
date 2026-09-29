@@ -1,9 +1,16 @@
 hi
 
-## Vidéo des alliances (page d'accueil)
+## Vidéos pilotées par le défilement (page d'accueil)
 
-Tout en haut de la page, deux alliances séparées se rejoignent au fil du défilement :
-la molette (ou le doigt sur téléphone) fait avancer et reculer la vidéo.
+Le site s'ouvre sur deux vidéos que la molette (ou le doigt sur téléphone) fait avancer et reculer :
+
+1. **L'enveloppe** : une enveloppe ivoire au rabat de dentelle, scellée du cachet nacré I&A, s'ouvre ;
+   le carton « Nous nous marions · Ines & Alan · 11 · 09 · 2027 » en sort puis se lève face à l'écran.
+   Le menu est masqué pendant l'ouverture ; le lien « Passer » mène directement aux alliances.
+   Si `musiqueAuto: true`, la musique se lance quand le rabat s'ouvre.
+2. **Les alliances** : deux alliances séparées se rejoignent.
+
+Fichiers de l'enveloppe : `video/enveloppe-large.*`, `video/enveloppe-mobile.*` (même principe que ci-dessous).
 
 - `video/alliances-large.mp4` / `.webm` : écrans larges (1920 × 1080)
 - `video/alliances-mobile.mp4` / `.webm` : téléphones en portrait (1080 × 1920)
