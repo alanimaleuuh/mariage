@@ -535,6 +535,32 @@ a.piece:hover{transform:var(--rot,) translateY(-4px)}
 .musique-on .ico-pause{display:block}
 
 /* =====================================================================
+   ALLIANCES : vidéo pilotée par le défilement (molette / doigt)
+   🎬 video/alliances-large.mp4|.webm (écrans larges) et video/alliances-mobile.mp4|.webm (téléphones)
+   ===================================================================== */
+.alliances{position:relative;height:340vh;--p:0}
+.alliances-scene{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#EDE3DB}
+.alliances-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* voile doux sur les bords + fondu vers le papier de la page */
+.alliances-scene::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 85% 75% at 50% 45%,transparent 55%,rgba(var(--ombre),.10) 100%),
+    linear-gradient(to bottom,transparent 78%,var(--fond) 100%)}
+.alliances-texte{position:absolute;left:0;right:0;bottom:clamp(64px,13vh,140px);z-index:2;text-align:center;padding:0 var(--gouttiere);
+  opacity:calc((var(--p) - .72) * 4);transform:translateY(calc((1 - min(1, max(0, (var(--p) - .72) * 4))) * 18px))}
+.alliances-titre{font-family:var(--script);font-size:clamp(52px,9vw,104px);line-height:1;color:var(--chocolat)}
+.alliances-titre .amp{color:var(--or-fonce)}
+.alliances-sous{margin-top:10px;color:var(--encre-douce)}
+.alliances-debut{position:absolute;left:0;right:0;top:calc(var(--nav-h) + clamp(28px,8vh,80px));z-index:2;text-align:center;padding:0 var(--gouttiere);
+  opacity:calc(1 - var(--p) * 5)}
+.alliances-debut .script{font-size:clamp(34px,5.4vw,58px);color:var(--chocolat);line-height:1.1}
+.alliances-indice{position:absolute;left:50%;bottom:max(22px,env(safe-area-inset-bottom));z-index:2;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--encre-douce);font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;
+  opacity:calc(1 - var(--p) * 8);pointer-events:none}
+.alliances-indice span{display:block;width:1px;height:38px;background:linear-gradient(var(--or),transparent);animation:indice 2.2s var(--ease) infinite;transform-origin:top}
+@keyframes indice{0%{transform:scaleY(0);opacity:1}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+
+/* =====================================================================
    RÉDUIRE LES ANIMATIONS
    ===================================================================== */
 @media (prefers-reduced-motion:reduce){
@@ -544,6 +570,10 @@ a.piece:hover{transform:var(--rot,) translateY(-4px)}
   .js .draw{stroke-dashoffset:0}
   .seal::after{display:none}
   .frise::after{transform:scaleY(1)}
+  .alliances{height:auto}
+  .alliances-scene{position:relative}
+  .alliances-debut,.alliances-indice{display:none}
+  .alliances-texte{opacity:1;transform:none}
 }
 </style>
 </head>
@@ -802,6 +832,29 @@ a.piece:hover{transform:var(--rot,) translateY(-4px)}
 <canvas id="petales" aria-hidden="true"></canvas>
 
 <main id="contenu">
+
+  <!-- =================================================================
+       0. LES ALLIANCES : séparées, puis réunies au fil du défilement
+       🎬 video/alliances-large.mp4 et video/alliances-mobile.mp4
+       ================================================================= -->
+  <section class="alliances" id="alliances" aria-label="Deux alliances qui se rejoignent">
+    <div class="alliances-scene">
+      <video class="alliances-video" id="alliances-video" muted playsinline preload="auto" disablepictureinpicture aria-hidden="true"
+             poster="video/alliances-large-debut.jpg"
+             data-large="video/alliances-large" data-mobile="video/alliances-mobile"
+             data-poster-large="video/alliances-large-debut.jpg" data-poster-mobile="video/alliances-mobile-debut.jpg"
+             data-fin-large="video/alliances-large-fin.jpg" data-fin-mobile="video/alliances-mobile-fin.jpg"></video>
+      <div class="alliances-debut">
+        <p class="caps">Deux chemins</p>
+        <p class="script">qui se rejoignent</p>
+      </div>
+      <div class="alliances-texte">
+        <p class="alliances-titre">Ines <span class="amp">&amp;</span> Alan</p>
+        <p class="caps alliances-sous">Unis le 11 septembre 2027</p>
+      </div>
+      <div class="alliances-indice" aria-hidden="true">Faites défiler<span></span></div>
+    </div>
+  </section>
 
   <!-- =================================================================
        1. ACCUEIL : la papeterie posée à plat
@@ -1367,6 +1420,59 @@ a.piece:hover{transform:var(--rot,) translateY(-4px)}
     sget:function(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } },
     sset:function(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
   };
+
+  /* ---------- Alliances : la molette fait avancer la vidéo ---------- */
+  (function(){
+    var section = document.getElementById("alliances");
+    var video = document.getElementById("alliances-video");
+    if(!section || !video) return;
+    var format = null, cible = 0, courant = 0, raf = 0, pret = false;
+
+    function choisir(){
+      var f = window.innerHeight > window.innerWidth * 1.05 ? "mobile" : "large";
+      if(f === format) return;
+      format = f; pret = false;
+      video.poster = video.dataset[reduit.matches ? (f === "mobile" ? "finMobile" : "finLarge") : (f === "mobile" ? "posterMobile" : "posterLarge")];
+      // MP4 (H.264) pour Safari / iPhone, WebM (VP9) sinon
+      var mp4 = video.canPlayType('video/mp4; codecs="avc1.640028"');
+      video.src = video.dataset[f] + (mp4 === "probably" || !video.canPlayType('video/webm; codecs="vp9"') ? ".mp4" : ".webm");
+      video.load();
+    }
+    function progression(){
+      var r = section.getBoundingClientRect();
+      var course = section.offsetHeight - window.innerHeight;
+      return course > 0 ? Math.min(1, Math.max(0, -r.top / course)) : 1;
+    }
+    function boucle(){
+      raf = 0;
+      if(!pret || !video.duration) return;
+      courant += (cible - courant) * 0.16;
+      if(Math.abs(cible - courant) < 0.0005) courant = cible;
+      var t = courant * (video.duration - 0.04);
+      if(!video.seeking && Math.abs(video.currentTime - t) > 0.008) video.currentTime = t;
+      if(courant !== cible) raf = requestAnimationFrame(boucle);
+    }
+    function maj(){
+      cible = reduit.matches ? 1 : progression();
+      section.style.setProperty("--p", cible.toFixed(4));
+      if(!raf) raf = requestAnimationFrame(boucle);
+    }
+    video.addEventListener("loadeddata", function(){ pret = true; maj(); });
+    video.addEventListener("seeked", function(){ if(!raf && courant !== cible) raf = requestAnimationFrame(boucle); });
+    // iOS ne décode la vidéo qu'après un geste : on la « réveille » au premier contact
+    function reveiller(){
+      var pr = video.play();
+      if(pr && pr.then) pr.then(function(){ video.pause(); maj(); }).catch(function(){});
+      else video.pause();
+    }
+    ["touchstart","pointerdown","keydown","wheel"].forEach(function(ev){
+      window.addEventListener(ev, reveiller, { once:true, passive:true });
+    });
+    choisir();
+    window.addEventListener("scroll", maj, { passive:true });
+    window.addEventListener("resize", function(){ choisir(); maj(); });
+    maj();
+  })();
 
   /* ---------- Coins ornés des cartes embossées ---------- */
   document.querySelectorAll("[data-coins]").forEach(function(carte){
