@@ -558,6 +558,10 @@ a.piece:hover{transform:var(--rot,) translateY(-4px)}
   display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--encre-douce);font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;
   opacity:calc(1 - var(--p) * 8);pointer-events:none}
 .alliances-indice span{display:block;width:1px;height:38px;background:linear-gradient(var(--or),transparent);animation:indice 2.2s var(--ease) infinite;transform-origin:top}
+/* téléphone : les alliances arrivent du haut et du bas, le texte d'ouverture se place dessous */
+@media (max-aspect-ratio:1/1.05){
+  .alliances-debut{top:auto;bottom:calc(max(22px,env(safe-area-inset-bottom)) + 84px)}
+}
 @keyframes indice{0%{transform:scaleY(0);opacity:1}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
 
 /* =====================================================================
